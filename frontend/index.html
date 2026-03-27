@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI RPA Assistant - Versão 100% Gratuita</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AI RPA Assistant</h1>
+            <p class="subtitle">Versão 100% Gratuita - Todas as funcionalidades são open-source</p>
+            <div class="status-badge">💰 CUSTO: ZERO REAIS</div>
+        </header>
+
+        <main>
+            <section class="health-section">
+                <h2>Status dos Serviços</h2>
+                <button id="checkHealth" class="btn btn-primary">Verificar Saúde do Sistema</button>
+                <div id="healthStatus" class="status-container"></div>
+            </section>
+
+            <section class="models-section">
+                <h2>Modelos de IA Disponíveis</h2>
+                <button id="listModels" class="btn btn-secondary">Listar Modelos</button>
+                <div id="modelsList" class="models-container"></div>
+            </section>
+
+            <section class="agents-section">
+                <h2>Agentes de IA</h2>
+                <div class="agent-grid">
+                    <div class="agent-card" data-agent="coding_assistant">
+                        <h3>💻 Coding Assistant</h3>
+                        <p>Ajuda a escrever código Python</p>
+                        <button class="btn btn-agent" data-agent="coding_assistant">Usar Agente</button>
+                    </div>
+                    <div class="agent-card" data-agent="web_scraper">
+                        <h3>🌐 Web Scraper</h3>
+                        <p>Extrai dados de websites</p>
+                        <button class="btn btn-agent" data-agent="web_scraper">Usar Agente</button>
+                    </div>
+                    <div class="agent-card" data-agent="data_analyst">
+                        <h3>📊 Data Analyst</h3>
+                        <p>Analisa dados e gera insights</p>
+                        <button class="btn btn-agent" data-agent="data_analyst">Usar Agente</button>
+                    </div>
+                    <div class="agent-card" data-agent="rpa_controller">
+                        <h3>⚙️ RPA Controller</h3>
+                        <p>Automatiza tarefas repetitivas</p>
+                        <button class="btn btn-agent" data-agent="rpa_controller">Usar Agente</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="task-section">
+                <h2>Enviar Tarefa para Agente</h2>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="agentName">Agente:</label>
+                        <select id="agentName" name="agentName" required>
+                            <option value="">Selecione um agente</option>
+                            <option value="coding_assistant">Coding Assistant</option>
+                            <option value="web_scraper">Web Scraper</option>
+                            <option value="data_analyst">Data Analyst</option>
+                            <option value="rpa_controller">RPA Controller</option>
+                            <option value="document_analyzer">Document Analyzer</option>
+                            <option value="task_orchestrator">Task Orchestrator</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskInput">Tarefa:</label>
+                        <textarea id="taskInput" name="task" rows="4" placeholder="Descreva a tarefa que deseja executar..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Executar Tarefa</button>
+                </form>
+                <div id="taskResult" class="result-container"></div>
+            </section>
+
+            <section class="tasks-section">
+                <h2>Tarefas Salvas</h2>
+                <button id="loadTasks" class="btn btn-secondary">Carregar Tarefas</button>
+                <div id="tasksList" class="tasks-container"></div>
+            </section>
+
+            <section class="scraping-section">
+                <h2>Salvar Dados de Scraping</h2>
+                <form id="scrapingForm">
+                    <div class="form-group">
+                        <label for="scrapingUrl">URL:</label>
+                        <input type="url" id="scrapingUrl" name="url" placeholder="https://exemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="scrapingData">Dados (JSON):</label>
+                        <textarea id="scrapingData" name="data" rows="4" placeholder='{"titulo": "Exemplo", "conteudo": "..."}' required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Salvar Dados</button>
+                </form>
+                <div id="scrapingResult" class="result-container"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>💰 Este projeto é 100% gratuito e open-source!</p>
+            <p>Documentação da API: <a href="/docs" target="_blank">Swagger UI</a> | <a href="/redoc" target="_blank">ReDoc</a></p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
