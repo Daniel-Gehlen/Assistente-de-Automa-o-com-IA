@@ -1,5 +1,5 @@
 """
-FastAPI - AI RPA Assistant (Versão 100% Gratuita)
+FastAPI - AI RPA Assistant (Versão 100% Gratuita - Hospedagem Otimizada)
 """
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,37 +8,31 @@ import logging
 from typing import Dict, Any
 import os
 
-from backend.database.postgres_client import PostgresClient
-from backend.database.mongodb_client import MongoDBClient
-from backend.services.ai.agent_orchestrator import AgentOrchestrator
+from backend.database.sqlite_client import SQLiteClient
+from backend.services.ai.simple_agents import AgentOrchestrator
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-postgres_db = None
-mongodb_db = None
+sqlite_db = None
 agent_orchestrator = None
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Gerencia o ciclo de vida da aplicação"""
-    global postgres_db, mongodb_db, agent_orchestrator
+    global sqlite_db, agent_orchestrator
 
-    logger.info("🚀 Iniciando aplicação 100% gratuita...")
+    logger.info("🚀 Iniciando aplicação 100% gratuita (versão otimizada)...")
 
     try:
-        postgres_db = PostgresClient()
-        await postgres_db.connect()
-        logger.info("✅ PostgreSQL conectado")
-
-        mongodb_db = MongoDBClient()
-        await mongodb_db.connect()
-        logger.info("✅ MongoDB conectado")
+        sqlite_db = SQLiteClient()
+        await sqlite_db.connect()
+        logger.info("✅ SQLite conectado (banco único e leve)")
 
         agent_orchestrator = AgentOrchestrator()
         await agent_orchestrator.initialize()
-        logger.info("✅ Agentes de IA locais inicializados")
+        logger.info("✅ Agentes de IA simplificados inicializados")
 
         logger.info("🎉 Todos os serviços gratuitos estão rodando!")
 
@@ -49,6 +43,8 @@ async def lifespan(app: FastAPI):
     yield
 
     logger.info("Encerrando aplicação...")
+    if sqlite_db:
+        sqlite_db.close()
     logger.info("✅ Aplicação encerrada")
 
 
@@ -73,14 +69,15 @@ async def root():
     """Endpoint raiz"""
     return {
         "status": "online",
-        "message": "AI RPA Assistant - Versão 100% Gratuita",
-        "version": "1.0.0-free",
+        "message": "AI RPA Assistant - Versão 100% Gratuita (Otimizada)",
+        "version": "1.0.0-free-optimized",
         "features": {
-            "postgresql": postgres_db is not None,
-            "mongodb": mongodb_db is not None,
-            "local_llm": agent_orchestrator is not None
+            "sqlite": sqlite_db is not None,
+            "simple_agents": agent_orchestrator is not None,
+            "scraping": True,
+            "tasks": True
         },
-        "cost": "💰 100% GRATUITO - Todos os recursos são open-source!"
+        "cost": "💰 100% GRATUITO - Hospedagem otimizada para plataformas gratuitas!"
     }
 
 
@@ -93,50 +90,40 @@ async def health_check() -> Dict[str, Any]:
         "cost": "free"
     }
 
-    if postgres_db:
+    if sqlite_db:
         try:
-            await postgres_db.health_check()
-            health_status["services"]["postgresql"] = "healthy"
+            await sqlite_db.health_check()
+            health_status["services"]["sqlite"] = "healthy"
         except Exception:
-            health_status["services"]["postgresql"] = "unhealthy"
+            health_status["services"]["sqlite"] = "unhealthy"
             health_status["api"] = "degraded"
-
-    if mongodb_db:
-        try:
-            await mongodb_db.health_check()
-            health_status["services"]["mongodb"] = "healthy"
-        except Exception:
-            health_status["services"]["mongodb"] = "unhealthy"
 
     if agent_orchestrator:
         try:
             agent_health = await agent_orchestrator.health_check()
-            health_status["services"]["local_llm_agents"] = agent_health
+            health_status["services"]["agents"] = agent_health
         except Exception:
-            health_status["services"]["local_llm_agents"] = "unhealthy"
+            health_status["services"]["agents"] = "unhealthy"
 
     return health_status
 
 
 @app.get("/models")
 async def list_available_models():
-    """Lista modelos disponíveis no Ollama"""
+    """Lista modelos/agentes disponíveis"""
     try:
-        import aiohttp
-        ollama_host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"{ollama_host}/api/tags") as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return {
-                        "models": data.get("models", []),
-                        "total": len(data.get("models", [])),
-                        "message": "Modelos disponíveis localmente (gratuitos)"
-                    }
-                else:
-                    return {"error": "Ollama não está rodando"}
+        if agent_orchestrator:
+            agents = agent_orchestrator.get_available_agents()
+            return {
+                "agents": agents,
+                "total": len(agents),
+                "message": "Agentes disponíveis (100% gratuitos)",
+                "note": "Versão simplificada - usando regras predefinidas"
+            }
+        else:
+            return {"error": "Agentes não inicializados"}
     except Exception as e:
-        return {"error": f"Erro ao listar modelos: {str(e)}"}
+        return {"error": f"Erro ao listar agentes: {str(e)}"}
 
 
 @app.post("/api/agents/process")
@@ -179,7 +166,7 @@ async def create_task(request: Dict[str, Any]):
         if not name:
             raise HTTPException(status_code=400, detail="Campo 'name' é obrigatório")
 
-        task_id = await postgres_db.insert_task(name, description, status)
+        task_id = await sqlite_db.insert_task(name, description, status)
         return {"task_id": task_id, "status": "created"}
 
     except Exception as e:
@@ -191,7 +178,7 @@ async def create_task(request: Dict[str, Any]):
 async def list_tasks(limit: int = 100):
     """Lista tarefas"""
     try:
-        tasks = await postgres_db.list_tasks(limit)
+        tasks = await sqlite_db.list_tasks(limit)
         return {"tasks": tasks, "total": len(tasks)}
 
     except Exception as e:
@@ -203,7 +190,7 @@ async def list_tasks(limit: int = 100):
 async def get_task(task_id: int):
     """Obtém uma tarefa por ID"""
     try:
-        task = await postgres_db.get_task(task_id)
+        task = await sqlite_db.get_task(task_id)
         if task:
             return task
         raise HTTPException(status_code=404, detail="Tarefa não encontrada")
@@ -223,7 +210,7 @@ async def update_task(task_id: int, request: Dict[str, Any]):
         result = request.get("result")
         error = request.get("error")
 
-        await postgres_db.update_task(task_id, status, result, error)
+        await sqlite_db.update_task(task_id, status, result, error)
         return {"status": "updated"}
 
     except Exception as e:
@@ -242,7 +229,7 @@ async def save_scraped_data(request: Dict[str, Any]):
         if not url or not data:
             raise HTTPException(status_code=400, detail="Campos 'url' e 'data' são obrigatórios")
 
-        doc_id = await mongodb_db.insert_scraped_data(url, data, metadata)
+        doc_id = await sqlite_db.insert_scraped_data(url, data, metadata)
         return {"doc_id": doc_id, "status": "saved"}
 
     except Exception as e:
@@ -254,7 +241,7 @@ async def save_scraped_data(request: Dict[str, Any]):
 async def list_scraped_data(limit: int = 100):
     """Lista dados de scraping"""
     try:
-        data = await mongodb_db.list_scraped_data(limit)
+        data = await sqlite_db.list_scraped_data(limit)
         return {"data": data, "total": len(data)}
 
     except Exception as e:
@@ -266,7 +253,7 @@ async def list_scraped_data(limit: int = 100):
 async def get_scraped_data(url: str):
     """Obtém dados de scraping por URL"""
     try:
-        data = await mongodb_db.get_scraped_data(url)
+        data = await sqlite_db.get_scraped_data(url)
         if data:
             return data
         raise HTTPException(status_code=404, detail="Dados não encontrados")
