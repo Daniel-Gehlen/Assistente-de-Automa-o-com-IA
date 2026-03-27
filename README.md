@@ -1,20 +1,18 @@
-# AI RPA Assistant - Versão 100% Gratuita 🆓
+# AI RPA Assistant
 
-## 💰 Custo: ZERO REAIS!
+Este projeto utiliza apenas ferramentas **open-source**:
 
-Este projeto utiliza apenas ferramentas **open-source e gratuitas**:
+| Componente | Tecnologia |
+|------------|------------|
+| API | FastAPI |
+| Banco de Dados SQL | PostgreSQL |
+| Banco de Dados NoSQL | MongoDB |
+| LLM (IA) | Ollama + Llama 3.2 |
+| RPA | Selenium + Playwright |
+| Containerização | Docker |
+| Agentes IA | Implementação própria |
 
-| Componente | Tecnologia | Custo |
-|------------|------------|-------|
-| API | FastAPI | Grátis |
-| Banco de Dados SQL | PostgreSQL | Grátis |
-| Banco de Dados NoSQL | MongoDB | Grátis |
-| LLM (IA) | Ollama + Llama 3.2 | Grátis |
-| RPA | Selenium + Playwright | Grátis |
-| Containerização | Docker | Grátis |
-| Agentes IA | Implementação própria | Grátis |
-
-## 🚀 Instalação (Tudo Grátis)
+## 🚀 Instalação
 
 ### Pré-requisitos
 - Docker e Docker Compose
@@ -38,7 +36,7 @@ make install
 make run
 ```
 
-## 🤖 Modelos de IA Disponíveis (Gratuitos)
+## 🤖 Modelos de IA Disponíveis
 
 O sistema usa **Ollama** para rodar LLMs localmente:
 
@@ -51,17 +49,6 @@ Para baixar outros modelos:
 ```bash
 make setup-ollama
 ```
-
-## 📊 Comparativo: Versão Paga vs Gratuita
-
-| Funcionalidade | Versão Paga | Versão Gratuita |
-|----------------|-------------|-----------------|
-| LLM | OpenAI GPT-4 | Llama 3.2 (local) |
-| Custo mensal | ~$20-100 | R$ 0 |
-| Privacidade | Dados vão para cloud | 100% local |
-| Internet necessária | Sim | Não (após download) |
-| Performance | Rápida | Depende do hardware |
-| Limites | Por token | Ilimitado |
 
 ## 🎯 Funcionalidades
 
@@ -183,7 +170,7 @@ lsof -i :8000
 
 ## 🤝 Contribuindo
 
-Este projeto é 100% open-source! Contribuições são bem-vindas.
+Contribuições são bem-vindas.
 
 1. Fork o projeto
 2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
@@ -196,6 +183,3 @@ Este projeto é 100% open-source! Contribuições são bem-vindas.
 MIT - Livre para uso comercial e pessoal
 
 ---
-
-**💰 Lembrete: Este projeto NÃO requer nenhum pagamento!**
-Tudo é open-source e roda localmente na sua máquina.
