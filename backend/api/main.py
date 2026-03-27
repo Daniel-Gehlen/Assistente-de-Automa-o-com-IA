@@ -3,6 +3,8 @@ FastAPI - AI RPA Assistant (Versão 100% Gratuita - Hospedagem Otimizada)
 """
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 import logging
 from typing import Dict, Any
@@ -62,6 +64,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Configurar arquivos estáticos
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+@app.get("/frontend/{file_path:path}")
+async def serve_frontend(file_path: str):
+    """Serve arquivos do frontend"""
+    return FileResponse(f"frontend/{file_path}")
 
 
 @app.get("/")
