@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI RPA Assistant - 100% Gratuito</title>
+    <title>AI RPA Assistant</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -12,53 +12,103 @@
             --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             --dark-gradient: linear-gradient(135deg, #434343 0%, #000000 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --shadow-medium: 0 15px 40px rgba(0, 0, 0, 0.12);
+            --shadow-strong: 0 20px 60px rgba(0, 0, 0, 0.2);
+            --border-light: 1px solid rgba(255, 255, 255, 0.18);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.06) 0%, transparent 45%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .main-container {
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .hero-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
+            background: var(--glass-bg);
+            border-radius: 24px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-strong);
+            backdrop-filter: blur(20px);
+            border: var(--border-light);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
         }
 
         .hero-title {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 800;
             background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
         }
 
         .hero-subtitle {
-            font-size: 1.2rem;
-            color: #666;
-            margin-bottom: 30px;
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 35px;
+            font-weight: 400;
+            line-height: 1.5;
         }
 
         .status-badge {
-            display: inline-block;
-            padding: 8px 20px;
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 24px;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 0.9rem;
-            margin: 5px;
+            font-size: 0.95rem;
+            margin: 8px;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .status-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
         }
 
         .status-online {
@@ -72,18 +122,33 @@
         }
 
         .feature-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: var(--glass-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border-left: 5px solid;
+            backdrop-filter: blur(10px);
+            border: var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            pointer-events: none;
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-medium);
         }
 
         .feature-card.sqlite {
@@ -103,20 +168,26 @@
         }
 
         .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            padding: 15px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
         }
 
         .feature-title {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 10px;
-            color: #333;
+            margin-bottom: 12px;
+            color: #2d3748;
+            letter-spacing: -0.5px;
         }
 
         .feature-description {
-            color: #666;
-            line-height: 1.6;
+            color: #718096;
+            line-height: 1.7;
+            font-size: 0.95rem;
         }
 
         .status-indicator {
@@ -143,23 +214,32 @@
         }
 
         .api-test-section {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: var(--glass-bg);
+            border-radius: 24px;
+            padding: 40px;
+            margin-top: 40px;
+            box-shadow: var(--shadow-medium);
+            backdrop-filter: blur(20px);
+            border: var(--border-light);
         }
 
         .test-button {
             background: var(--primary-gradient);
             border: none;
-            border-radius: 10px;
-            padding: 12px 25px;
+            border-radius: 12px;
+            padding: 14px 28px;
             color: white;
             font-weight: 600;
-            margin: 5px;
+            margin: 6px;
             cursor: pointer;
-            transition: transform 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+            font-size: 0.95rem;
+        }
+
+        .test-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: var(--shadow-medium);
         }
 
         .test-button:hover {
@@ -168,15 +248,16 @@
         }
 
         .response-box {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
+            background: #f7fafc;
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 25px;
             border-left: 4px solid #667eea;
-            font-family: 'Courier New', monospace;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
             font-size: 0.9rem;
             max-height: 400px;
             overflow-y: auto;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .loading {
@@ -206,9 +287,13 @@
 
         .footer {
             text-align: center;
-            margin-top: 40px;
+            margin-top: 50px;
             color: white;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
         }
 
         .footer a {
@@ -226,17 +311,17 @@
         <!-- Hero Section -->
         <div class="hero-section">
             <h1 class="hero-title">🤖 AI RPA Assistant</h1>
-            <p class="hero-subtitle">Assistente de Automação com IA - 100% Gratuito e Open Source</p>
+            <p class="hero-subtitle">Assistente Inteligente de Automação com Inteligência Artificial</p>
 
             <div class="status-badges">
                 <span class="status-badge status-online">
                     <i class="bi bi-check-circle-fill"></i> Online
                 </span>
-                <span class="status-badge status-free">
-                    <i class="bi bi-cash-stack"></i> 100% Gratuito
-                </span>
                 <span class="status-badge status-online">
                     <i class="bi bi-lightning-fill"></i> Otimizado
+                </span>
+                <span class="status-badge status-online">
+                    <i class="bi bi-code-slash"></i> Open Source
                 </span>
             </div>
         </div>
@@ -380,7 +465,7 @@
                 | <i class="bi bi-heart-fill text-danger"></i> Feito com amor para a comunidade open source
             </p>
             <p>
-                <small>Versão 1.0.0-free-optimized | 100% Gratuito para sempre</small>
+                <small>Versão 1.0.0 | Open Source</small>
             </p>
         </div>
     </div>

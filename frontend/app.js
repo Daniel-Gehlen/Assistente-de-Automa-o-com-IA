@@ -6,6 +6,11 @@
 // Configuração da API
 const API_BASE_URL = window.location.origin;
 
+// Verificar se está em produção (Vercel)
+const isProduction = window.location.hostname.includes('vercel.app') ||
+                     window.location.hostname.includes('now.sh') ||
+                     !window.location.hostname.includes('localhost');
+
 // Elementos DOM
 const sqliteStatus = document.getElementById('sqlite-status');
 const agentsStatus = document.getElementById('agents-status');
@@ -32,14 +37,47 @@ function showResponse(data) {
 }
 
 // Função para mostrar erro
-function showError(error) {
-    responseContent.textContent = `Erro: ${error}`;
+function showError(error, isProductionError = false) {
+    let errorMessage = `Erro: ${error}`;
+
+    if (isProductionError) {
+        errorMessage = `
+⚠️ API Não Disponível
+
+Este frontend está hospedado no Vercel como demonstração estática.
+
+Para usar a API completa com:
+• Agentes de IA
+• Web Scraping
+• Gerenciamento de Tarefas
+• SQLite Database
+
+Execute o backend localmente:
+1. Clone o repositório
+2. Execute: python app.py
+3. Acesse: http://localhost:8000
+
+Ou acesse o GitHub para mais informações:
+https://github.com/Daniel-Gehlen/Assistente-de-Automa-o-com-IA
+        `.trim();
+    }
+
+    responseContent.textContent = errorMessage;
     responseElement.style.display = 'block';
     responseElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Função para fazer requisição à API
 async function apiRequest(endpoint, method = 'GET', body = null) {
+    // Se estiver em produção (Vercel), mostrar mensagem de API não disponível
+    if (isProduction) {
+        return {
+            success: false,
+            error: 'API não disponível nesta versão. Este é apenas o frontend hospedado no Vercel. Para usar a API completa, execute o backend localmente.',
+            isProduction: true
+        };
+    }
+
     try {
         const options = {
             method,
@@ -72,7 +110,7 @@ async function testEndpoint(endpoint) {
     if (result.success) {
         showResponse(result.data);
     } else {
-        showError(result.error);
+        showError(result.error, result.isProduction);
     }
 }
 
@@ -98,12 +136,28 @@ async function testAgent() {
     if (result.success) {
         showResponse(result.data);
     } else {
-        showError(result.error);
+        showError(result.error, result.isProduction);
     }
 }
 
 // Função para atualizar status dos serviços
 async function updateServiceStatus() {
+    // Se estiver em produção, mostrar status de demonstração
+    if (isProduction) {
+        if (sqliteStatus) {
+            sqliteStatus.textContent = 'Demo';
+            sqliteStatus.parentElement.querySelector('.status-indicator').classList.remove('status-healthy', 'status-unhealthy');
+            sqliteStatus.parentElement.querySelector('.status-indicator').classList.add('status-healthy');
+        }
+
+        if (agentsStatus) {
+            agentsStatus.textContent = 'Demo';
+            agentsStatus.parentElement.querySelector('.status-indicator').classList.remove('status-healthy', 'status-unhealthy');
+            agentsStatus.parentElement.querySelector('.status-indicator').classList.add('status-healthy');
+        }
+        return;
+    }
+
     try {
         // Health check
         const healthResult = await apiRequest('/health');
@@ -163,6 +217,11 @@ async function updateServiceStatus() {
 
 // Função para criar nova tarefa
 async function createTask() {
+    if (isProduction) {
+        showError('Criação de tarefas não disponível no modo demo.', true);
+        return;
+    }
+
     const name = prompt('Nome da tarefa:');
     if (!name) return;
 
@@ -188,6 +247,11 @@ async function createTask() {
 
 // Função para salvar dados de scraping
 async function saveScrapingData() {
+    if (isProduction) {
+        showError('Web scraping não disponível no modo demo.', true);
+        return;
+    }
+
     const url = prompt('URL do site:');
     if (!url) return;
 
@@ -222,6 +286,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('🤖 AI RPA Assistant - Frontend inicializado');
     console.log('📍 API Base URL:', API_BASE_URL);
+    console.log('🌐 Modo:', isProduction ? 'Produção (Vercel)' : 'Desenvolvimento');
+
+    // Se estiver em produção, mostrar aviso
+    if (isProduction) {
+        console.log('⚠️ Modo demonstração - API não disponível');
+
+        // Adicionar aviso visual na página
+        const heroSection = document.querySelector('.hero-section');
+        if (heroSection) {
+            const demoNotice = document.createElement('div');
+            demoNotice.className = 'alert alert-info mt-3';
+            demoNotice.innerHTML = `
+                <i class="bi bi-info-circle-fill"></i>
+                <strong>Modo Demonstração</strong> - Este frontend está hospedado no Vercel.
+                Para usar a API completa, execute o backend localmente.
+                <a href="https://github.com/Daniel-Gehlen/Assistente-de-Automa-o-com-IA" target="_blank" class="alert-link">
+                    Ver instruções no GitHub
+                </a>
+            `;
+            heroSection.appendChild(demoNotice);
+        }
+    }
 });
 
 // Adicionar atalhos de teclado
