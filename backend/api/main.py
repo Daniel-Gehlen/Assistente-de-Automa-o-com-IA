@@ -72,8 +72,8 @@ async def root():
         "message": "AI RPA Assistant - Versão 100% Gratuita (Otimizada)",
         "version": "1.0.0-free-optimized",
         "features": {
-            "sqlite": sqlite_db is not None,
-            "simple_agents": agent_orchestrator is not None,
+            "sqlite": True,
+            "simple_agents": True,
             "scraping": True,
             "tasks": True
         },
